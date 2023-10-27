@@ -14,6 +14,13 @@ impl Ray {
         }
     }
 
+    pub fn from_to(from: Vec3, to: Vec3) -> Ray {
+        Ray {
+            origin: from,
+            direction: (to - from).get_normalized()
+        }
+    }
+
     pub fn at(&self, t: f32) -> Vec3 {
         self.origin + self.direction * t
     }

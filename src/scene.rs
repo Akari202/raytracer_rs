@@ -1,20 +1,11 @@
+use std::cmp::min_by;
 use crate::ray::Ray;
 use crate::vec::Vec3;
 use rayon::prelude::*;
+pub(crate) use crate::hittable::{HitRecord, Hittable};
 
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>
-}
-
-pub trait Hittable {
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
-}
-
-#[derive(Debug)]
-pub struct HitRecord {
-    point: Vec3,
-    normal: Vec3,
-    t: f32
 }
 
 impl Scene {
@@ -39,7 +30,7 @@ impl Hittable for Scene {
         let mut closest_t: f32 = t_max;
         for object in &self.objects {
             if let Some(hit) = object.hit(ray, t_min, closest_t) {
-                closest_t = hit.t;
+                closest_t = hit.get_t();
                 closest_hit = Some(hit);
             }
         }
@@ -47,24 +38,3 @@ impl Hittable for Scene {
     }
 }
 
-impl HitRecord {
-    pub fn new(point: Vec3, normal: Vec3, t: f32) -> HitRecord {
-        HitRecord {
-            point,
-            normal,
-            t
-        }
-    }
-
-    pub fn get_point(&self) -> &Vec3 {
-        &self.point
-    }
-
-    pub fn get_normal(&self) -> &Vec3 {
-        &self.normal
-    }
-
-    pub fn get_t(&self) -> f32 {
-        self.t
-    }
-}

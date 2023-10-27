@@ -1,4 +1,5 @@
 use std::ops::{Add, Div, Mul, Sub};
+use rand::random;
 use crate::util::q_rsqrt;
 
 #[derive(Clone, Copy, Debug)]
@@ -15,6 +16,11 @@ impl Vec3 {
 
     pub fn empty() -> Vec3 {
         Vec3 { x: 0.0, y: 0.0, z: 0.0 }
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        let vector: Vec3 = Vec3::new(random::<f32>(), random::<f32>(), random::<f32>());
+        vector.get_normalized()
     }
 
     pub fn get_normalized(&self) -> Vec3 {

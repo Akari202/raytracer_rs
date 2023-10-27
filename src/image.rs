@@ -45,7 +45,19 @@ impl Image {
         self.rays += 1;
     }
 
+    pub fn set_ray_count(&mut self, rays: u32) {
+        self.rays = rays;
+    }
+
+    pub fn jump_ray_count(&mut self, rays: u32) {
+        self.rays += rays;
+    }
+
     pub fn get_ray_count(&self) -> u32 {
         self.rays
+    }
+
+    pub fn set_pixels(&mut self, pixels: Vec<[u8; 4]>) {
+        self.pixels = pixels;
     }
 }

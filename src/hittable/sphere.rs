@@ -1,17 +1,21 @@
+pub(crate) use crate::hittable::{HitRecord, Hittable};
+use crate::material::Material;
 use crate::ray::Ray;
-use crate::scene::{HitRecord, Hittable};
 use crate::vec::Vec3;
+
 
 pub struct Sphere {
     center: Vec3,
-    radius: f32
+    radius: f32,
+    material: Box<dyn Material>
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f32) -> Sphere {
+    pub fn new(center: Vec3, radius: f32, material: Box<dyn Material>) -> Sphere {
         Sphere {
             center,
-            radius
+            radius,
+            material
         }
     }
 }
