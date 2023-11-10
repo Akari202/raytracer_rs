@@ -1,0 +1,73 @@
+[camera]
+name = "main"
+from = [10, 10, 5]
+to = [0, 0, 0]
+pixel_size = [1920, 1080]
+samples = 1
+max_depth = 10
+
+[materials]
+diffuse = [
+    {name = "dull grey", color = [0.3, 0.3, 0.8], albedo = 0.5},
+    {name = "ground", color = [0.3, 0.8, 0.3], albedo = 0.5}
+]
+reflective = [
+    {name = "blue mirror", albedo = [0.8, 0.3, 0.3], fuzz = 0.1}
+]
+dielectric = [
+    {name = "green glass", color = [1, 1, 1], index = 1.5}
+]
+
+[objects]
+spheres = [
+    {center = [-6.5, 0, 3], radius = 4, material = "dull grey"},
+    {center = [0, 0, 3], radius = 2.5, material = "blue mirror"},
+    {center = [6.5, 0, 3], radius = 4, material = "green glass"},
+
+   {center = [0, 0, 0], radius = 0.5, material = "blue mirror"},
+   {center = [0, 0, 1], radius = 0.5, material = "green glass"},
+   {center = [0, 0, 2], radius = 0.5, material = "dull grey"},
+   {center = [0, 0, 3], radius = 0.5, material = "blue mirror"},
+   {center = [0, 0, 4], radius = 0.5, material = "green glass"},
+   {center = [0, 0, 5], radius = 0.5, material = "dull grey"},
+   {center = [0, 1, 0], radius = 0.5, material = "blue mirror"},
+   {center = [0, 2, 0], radius = 0.5, material = "green glass"},
+   {center = [0, 3, 0], radius = 0.5, material = "dull grey"},
+   {center = [0, 4, 0], radius = 0.5, material = "blue mirror"},
+   {center = [0, 5, 0], radius = 0.5, material = "green glass"},
+   {center = [1, 0, 0], radius = 0.5, material = "dull grey"},
+   {center = [2, 0, 0], radius = 0.5, material = "blue mirror"},
+   {center = [3, 0, 0], radius = 0.5, material = "green glass"},
+   {center = [4, 0, 0], radius = 0.5, material = "dull grey"},
+   {center = [5, 0, 0], radius = 0.5, material = "blue mirror"},
+   {center = [0, 0, -1], radius = 0.5, material = "green glass"},
+   {center = [0, 0, -2], radius = 0.5, material = "dull grey"},
+   {center = [0, 0, -3], radius = 0.5, material = "blue mirror"},
+   {center = [0, 0, -4], radius = 0.5, material = "green glass"},
+   {center = [0, 0, -5], radius = 0.5, material = "dull grey"},
+   {center = [0, -1, 0], radius = 0.5, material = "blue mirror"},
+   {center = [0, -2, 0], radius = 0.5, material = "green glass"},
+   {center = [0, -3, 0], radius = 0.5, material = "dull grey"},
+   {center = [0, -4, 0], radius = 0.5, material = "blue mirror"},
+   {center = [0, -5, 0], radius = 0.5, material = "green glass"},
+   {center = [-1, 0, 0], radius = 0.5, material = "dull grey"},
+   {center = [-2, 0, 0], radius = 0.5, material = "blue mirror"},
+   {center = [-3, 0, 0], radius = 0.5, material = "green glass"},
+   {center = [-4, 0, 0], radius = 0.5, material = "dull grey"},
+   {center = [-5, 0, 0], radius = 0.5, material = "blue mirror"}
+]
+planes = [
+    # {point = [0, 0, -1], normal = [0, 0, 1], material = "ground"}
+]
+rectangles = []
+cubes = []
+triangles = []
+meshes = [
+   {path = "teapot.tri", material = "dull grey", translate = [0, 0, 0], scale = 1, rotate = [0, 0, 0]}
+]
+
+
+
+
+
+

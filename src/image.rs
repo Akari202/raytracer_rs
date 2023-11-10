@@ -19,7 +19,17 @@ impl Image {
         }
     }
 
-    pub fn save_as_png(&self, path: impl AsRef<std::path::Path>) -> Result<(), Box<dyn Error>>{
+    fn correct_gamma(&mut self) {
+        for pixel in &mut self.pixels {
+            pixel[0] = (pixel[0] as f32).sqrt() as u8;
+            pixel[1] = (pixel[1] as f32).sqrt() as u8;
+            pixel[2] = (pixel[2] as f32).sqrt() as u8;
+            pixel[3] = 255;
+        }
+    }
+
+    pub fn save_as_png(&mut self, path: impl AsRef<std::path::Path>) -> Result<(), Box<dyn Error>>{
+        // self.correct_gamma();
         let mut buffer: Vec<u8> = Vec::new();
         for pixel in &self.pixels {
             buffer.push(pixel[0]);
@@ -61,3 +71,4 @@ impl Image {
         self.pixels = pixels;
     }
 }
+

@@ -1,8 +1,9 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 use rand::random;
+use serde::Deserialize;
 use crate::util::q_rsqrt;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Deserialize)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
@@ -23,9 +24,29 @@ impl Vec3 {
         vector.get_normalized()
     }
 
+    pub fn near_zero(&self) -> bool {
+        let s: f32 = 1e-8;
+        self.x.abs() < s && self.y.abs() < s && self.z.abs() < s
+    }
+
+    pub fn reflect(&self, normal: &Vec3) -> Vec3 {
+        *self - *normal * 2.0 * self.dot(normal)
+    }
+
+    pub fn refract(&self, normal: &Vec3, refraction_index: f32) -> Vec3 {
+        let cos_theta: f32 = (-*self).dot(normal).min(1.0);
+        let r_out_perp: Vec3 = (*self + *normal * cos_theta) * refraction_index;
+        let r_out_parallel: Vec3 = *normal * -(1.0 - r_out_perp.length_squared()).abs().sqrt();
+        r_out_perp + r_out_parallel
+    }
+
     pub fn get_normalized(&self) -> Vec3 {
         let inverse_root: f32 = self.q_inverse_root();
         Vec3 { x: self.x * inverse_root, y: self.y * inverse_root, z: self.z * inverse_root }
+    }
+
+    pub fn length_squared(&self) -> f32 {
+        self.x * self.x + self.y * self.y + self.z * self.z
     }
 
     pub fn normalize(&mut self) {
@@ -137,9 +158,23 @@ impl Mul<&Vec3> for &Vec3 {
     }
 }
 
+impl Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        Vec3 { x: self.x * rhs.x, y: self.y * rhs.y, z: self.z * rhs.z }
+    }
+}
+
 impl Div<f32> for Vec3 {
     type Output = Vec3;
     fn div(self, rhs: f32) -> Vec3 {
         Vec3 { x: self.x / rhs, y: self.y / rhs, z: self.z / rhs }
+    }
+}
+
+impl Neg for Vec3 {
+    type Output = Vec3;
+    fn neg(self) -> Vec3 {
+        Vec3 { x: -self.x, y: -self.y, z: -self.z }
     }
 }

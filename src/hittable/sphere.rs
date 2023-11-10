@@ -32,13 +32,13 @@ impl Hittable for Sphere {
             if t < t_max && t > t_min {
                 let point: Vec3 = ray.at(t);
                 let normal: Vec3 = (point - self.center) / self.radius;
-                return Some(HitRecord::new(point, normal, t));
+                return Some(HitRecord::new(point, normal, t, &self.material));
             }
             let t: f32 = (-b + discriminant.sqrt()) / a;
             if t < t_max && t > t_min {
                 let point: Vec3 = ray.at(t);
                 let normal: Vec3 = (point - self.center) / self.radius;
-                return Some(HitRecord::new(point, normal, t));
+                return Some(HitRecord::new(point, normal, t, &self.material));
             }
         }
         None

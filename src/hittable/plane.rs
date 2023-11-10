@@ -42,7 +42,7 @@ impl Hittable for Plane {
             let t: f32 = (self.point - *ray.get_origin()).dot(&self.normal) / denominator;
             if t < t_max && t > t_min {
                 let point: Vec3 = ray.at(t);
-                return Some(HitRecord::new(point, self.normal, t));
+                return Some(HitRecord::new(point, self.normal, t, &self.material));
             }
         }
         None

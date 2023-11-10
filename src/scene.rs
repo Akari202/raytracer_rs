@@ -22,6 +22,10 @@ impl Scene {
     pub fn add_objects(&mut self, objects: Vec<Box<dyn Hittable>>) {
         self.objects.extend(objects);
     }
+
+    pub fn get_object_count(&self) -> usize {
+        self.objects.len()
+    }
 }
 
 impl Hittable for Scene {
