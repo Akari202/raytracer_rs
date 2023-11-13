@@ -1,7 +1,9 @@
 mod mesh;
 
+use std::clone;
 use std::error::Error;
 use std::path::Path;
+use std::rc::Rc;
 use serde::Deserialize;
 use crate::hittable::Hittable;
 use crate::vec::Vec3;
@@ -70,16 +72,17 @@ struct Cube {
 
 #[derive(Deserialize, Debug)]
 struct Triangle {
-    point_a: Vec3,
-    point_b: Vec3,
-    point_c: Vec3,
+    vertices: [Vec3; 3],
     material: String
 }
 
 #[derive(Deserialize, Debug)]
 struct Mesh {
     path: String,
-    material: String
+    material: String,
+    translation: Option<Vec3>,
+    rotation: Option<Vec3>,
+    scale: Option<Vec3>
 }
 
 #[derive(Deserialize, Debug)]
@@ -236,9 +239,9 @@ impl HittableEntry for Cube {
 impl HittableEntry for Triangle {
     fn build(&self, materials: &Materials) -> Result<Box<dyn Hittable>, Box<dyn Error>> {
         Ok(Box::new(crate::hittable::triangle::Triangle::new(
-            self.point_a,
-            self.point_b,
-            self.point_c,
+            self.vertices[0],
+            self.vertices[1],
+            self.vertices[2],
             materials.get(&self.material).ok_or("Material not found")?.build()?
         )))
     }
@@ -246,16 +249,26 @@ impl HittableEntry for Triangle {
 
 impl HittableEntry for Mesh {
     fn build(&self, materials: &Materials) -> Result<Box<dyn Hittable>, Box<dyn Error>> {
-        Ok(Box::new(crate::hittable::mesh::Mesh::load(
+        let mut mesh = crate::hittable::mesh::Mesh::load(
             self.path.clone(),
-            materials.get(&self.material).ok_or("Material not found")?.build()?
-        )))
+            materials.get(&self.material).ok_or("Material not found")?.build()?,
+        )?;
+        if let Some(translation) = &self.translation {
+            mesh.translate(translation.clone());
+        }
+        if let Some(rotation) = &self.rotation {
+            mesh.rotate(rotation.clone());
+        }
+        if let Some(scale) = &self.scale {
+            mesh.scale(scale.clone());
+        }
+        Ok(Box::new(mesh))
     }
 }
 
 impl MaterialEntry for Diffuse {
-    fn build(&self) -> Result<Box<dyn crate::material::Material>, Box<dyn Error>> {
-        Ok(Box::new(crate::material::diffuse::Diffuse::new(
+    fn build(&self) -> Result<Rc<dyn crate::material::Material>, Box<dyn Error>> {
+        Ok(Rc::new(crate::material::diffuse::Diffuse::new(
             self.color,
             self.albedo
         )))
@@ -263,8 +276,8 @@ impl MaterialEntry for Diffuse {
 }
 
 impl MaterialEntry for Reflective {
-    fn build(&self) -> Result<Box<dyn crate::material::Material>, Box<dyn Error>> {
-        Ok(Box::new(crate::material::reflective::Reflective::new(
+    fn build(&self) -> Result<Rc<dyn crate::material::Material>, Box<dyn Error>> {
+        Ok(Rc::new(crate::material::reflective::Reflective::new(
             self.albedo,
             self.fuzz
         )))
@@ -272,8 +285,8 @@ impl MaterialEntry for Reflective {
 }
 
 impl MaterialEntry for Dielectric {
-    fn build(&self) -> Result<Box<dyn crate::material::Material>, Box<dyn Error>> {
-        Ok(Box::new(crate::material::dielectric::Dielectric::new(
+    fn build(&self) -> Result<Rc<dyn crate::material::Material>, Box<dyn Error>> {
+        Ok(Rc::new(crate::material::dielectric::Dielectric::new(
             self.index,
             self.color
         )))
@@ -281,7 +294,7 @@ impl MaterialEntry for Dielectric {
 }
 
 trait MaterialEntry {
-    fn build(&self) -> Result<Box<dyn crate::material::Material>, Box<dyn Error>>;
+    fn build(&self) -> Result<Rc<dyn crate::material::Material>, Box<dyn Error>>;
 }
 
 trait HittableEntry {

@@ -1,7 +1,6 @@
 use std::cmp::min_by;
 use crate::ray::Ray;
 use crate::vec::Vec3;
-use rayon::prelude::*;
 pub(crate) use crate::hittable::{HitRecord, Hittable};
 
 pub struct Scene {
@@ -24,7 +23,12 @@ impl Scene {
     }
 
     pub fn get_object_count(&self) -> usize {
-        self.objects.len()
+        let count: usize = self.objects
+            .iter()
+            .fold( 0usize, |acc, i| {
+                acc + i.get_object_count()
+            });
+        count
     }
 }
 

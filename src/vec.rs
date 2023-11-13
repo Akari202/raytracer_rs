@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub};
 use rand::random;
 use serde::Deserialize;
 use crate::util::q_rsqrt;
@@ -40,6 +40,12 @@ impl Vec3 {
         r_out_perp + r_out_parallel
     }
 
+    pub fn scale(&mut self, scale: Vec3) {
+        self.x *= scale.x;
+        self.y *= scale.y;
+        self.z *= scale.z;
+    }
+
     pub fn get_normalized(&self) -> Vec3 {
         let inverse_root: f32 = self.q_inverse_root();
         Vec3 { x: self.x * inverse_root, y: self.y * inverse_root, z: self.z * inverse_root }
@@ -74,6 +80,21 @@ impl Vec3 {
 
     pub fn dot(&self, rhs: &Vec3) -> f32 {
         self * rhs
+    }
+
+    pub fn rotate(&mut self, rotation: Vec3) {
+        let x: f32 = self.x;
+        let y: f32 = self.y;
+        let z: f32 = self.z;
+        let cos_x: f32 = rotation.x.cos();
+        let sin_x: f32 = rotation.x.sin();
+        let cos_y: f32 = rotation.y.cos();
+        let sin_y: f32 = rotation.y.sin();
+        let cos_z: f32 = rotation.z.cos();
+        let sin_z: f32 = rotation.z.sin();
+        self.x = cos_y * (cos_z * x - sin_z * y) + sin_y * z;
+        self.y = sin_x * (cos_y * y + sin_y * (sin_z * x + cos_z * y)) + cos_x * (cos_z * x - sin_z * y);
+        self.z = cos_x * (cos_y * z - sin_y * (sin_z * x + cos_z * y)) - sin_x * (cos_z * x - sin_z * y);
     }
 }
 
@@ -176,5 +197,13 @@ impl Neg for Vec3 {
     type Output = Vec3;
     fn neg(self) -> Vec3 {
         Vec3 { x: -self.x, y: -self.y, z: -self.z }
+    }
+}
+
+impl AddAssign for Vec3 {
+    fn add_assign(&mut self, rhs: Vec3) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
     }
 }

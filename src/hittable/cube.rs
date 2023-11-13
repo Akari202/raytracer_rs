@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use crate::hittable::HitRecord;
 use crate::material::Material;
 use crate::ray::Ray;
@@ -9,11 +10,11 @@ pub struct Cube {
     width: Vec3,
     height: Vec3,
     depth: Vec3,
-    material: Box<dyn Material>
+    material: Rc<dyn Material>
 }
 
 impl Cube {
-    pub fn new(center: Vec3, width: Vec3, height: Vec3, depth: Vec3, material: Box<dyn Material>) -> Cube {
+    pub fn new(center: Vec3, width: Vec3, height: Vec3, depth: Vec3, material: Rc<dyn Material>) -> Cube {
         Cube {
             center,
             width,

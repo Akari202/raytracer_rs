@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use crate::hittable::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::ray::Ray;
@@ -7,11 +8,11 @@ pub struct Rectangle {
     center: Vec3,
     width: Vec3,
     height: Vec3,
-    material: Box<dyn Material>
+    material: Rc<dyn Material>
 }
 
 impl Rectangle {
-    pub fn new(center: Vec3, width: Vec3, height: Vec3, material: Box<dyn Material>) -> Rectangle {
+    pub fn new(center: Vec3, width: Vec3, height: Vec3, material: Rc<dyn Material>) -> Rectangle {
         Rectangle {
             center,
             width,

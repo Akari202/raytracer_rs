@@ -1,3 +1,4 @@
+use std::rc::Rc;
 pub(crate) use crate::hittable::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::vec::Vec3;
@@ -5,11 +6,11 @@ use crate::vec::Vec3;
 pub struct Plane {
     normal: Vec3,
     point: Vec3,
-    material: Box<dyn Material>
+    material: Rc<dyn Material>
 }
 
 impl Plane {
-    pub fn new(normal: Vec3, point: Vec3, material: Box<dyn Material>) -> Plane {
+    pub fn new(normal: Vec3, point: Vec3, material: Rc<dyn Material>) -> Plane {
         Plane {
             normal: normal.get_normalized(),
             point,
@@ -17,7 +18,7 @@ impl Plane {
         }
     }
 
-    pub fn from_points(a: Vec3, b: Vec3, c: Vec3, material: Box<dyn Material>) -> Plane {
+    pub fn from_points(a: Vec3, b: Vec3, c: Vec3, material: Rc<dyn Material>) -> Plane {
         let normal: Vec3 = (b - a).cross(&(c - a)).get_normalized();
         Plane {
             normal,
